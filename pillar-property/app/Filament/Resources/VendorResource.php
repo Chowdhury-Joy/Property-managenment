@@ -9,14 +9,26 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class VendorResource extends Resource
 {
     protected static ?string $model = Vendor::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-truck';
+
     protected static ?string $navigationGroup = 'Maintenance';
+
     protected static ?int $navigationSort = 2;
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
+    }
 
     public static function form(Form $form): Form
     {
@@ -35,7 +47,7 @@ class VendorResource extends Resource
             Tables\Columns\TextColumn::make('trade')->searchable(),
             Tables\Columns\TextColumn::make('phone'),
             Tables\Columns\TextColumn::make('email'),
-        ])->filters([])->actions([Tables\Actions\EditAction::make()]);
+        ])->filters([Tables\Filters\TrashedFilter::make()])->actions([Tables\Actions\EditAction::make(), Tables\Actions\DeleteAction::make(), Tables\Actions\RestoreAction::make(), Tables\Actions\ForceDeleteAction::make()])->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make(), Tables\Actions\RestoreBulkAction::make(), Tables\Actions\ForceDeleteBulkAction::make()])]);
     }
 
     public static function getRelations(): array

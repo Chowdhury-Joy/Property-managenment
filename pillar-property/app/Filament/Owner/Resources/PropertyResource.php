@@ -8,6 +8,9 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
 
 class PropertyResource extends Resource
 {
@@ -31,6 +34,23 @@ class PropertyResource extends Resource
         ])->actions([
             Tables\Actions\ViewAction::make(),
         ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('Property Details')
+                    ->schema([
+                        TextEntry::make('name'),
+                        TextEntry::make('address'),
+                        TextEntry::make('city'),
+                        TextEntry::make('state'),
+                        TextEntry::make('zip'),
+                        TextEntry::make('type')->badge(),
+                        TextEntry::make('status')->badge()->color(fn (string $state): string => $state === 'active' ? 'success' : 'gray'),
+                    ])->columns(2),
+            ]);
     }
 
     public static function getPages(): array

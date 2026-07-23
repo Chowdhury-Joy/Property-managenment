@@ -31,7 +31,7 @@ class OwnerPanelProvider extends PanelProvider
             ->brandLogo(fn () => Setting::get('logo') ? asset('storage/'.Setting::get('logo')) : null)
             ->brandLogoHeight('2.5rem')
             ->colors([
-                'primary' => Color::Blue,
+                'primary' => Color::hex(Setting::get('primary_color', '#1e3a8a')),
             ])
             ->discoverResources(in: app_path('Filament/Owner/Resources'), for: 'App\\Filament\\Owner\\Resources')
             ->discoverPages(in: app_path('Filament/Owner/Pages'), for: 'App\\Filament\\Owner\\Pages')

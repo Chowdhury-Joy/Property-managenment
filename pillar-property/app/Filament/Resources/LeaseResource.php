@@ -9,14 +9,26 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class LeaseResource extends Resource
 {
     protected static ?string $model = Lease::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
+
     protected static ?string $navigationGroup = 'Leasing';
+
     protected static ?int $navigationSort = 1;
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
+    }
 
     public static function form(Form $form): Form
     {
@@ -46,7 +58,7 @@ class LeaseResource extends Resource
                 'draft' => 'gray', 'active' => 'success', 'ending_soon' => 'warning', 'ended' => 'info', 'terminated' => 'danger', default => 'gray',
             }),
             Tables\Columns\TextColumn::make('end_date')->date(),
-        ])->filters([])->actions([Tables\Actions\EditAction::make()]);
+        ])->filters([Tables\Filters\TrashedFilter::make()])->actions([Tables\Actions\EditAction::make(), Tables\Actions\DeleteAction::make(), Tables\Actions\RestoreAction::make(), Tables\Actions\ForceDeleteAction::make()])->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make(), Tables\Actions\RestoreBulkAction::make(), Tables\Actions\ForceDeleteBulkAction::make()])]);
     }
 
     public static function getRelations(): array

@@ -10,6 +10,7 @@ use App\Models\RentPayment;
 use App\Models\Setting;
 use App\Models\Tenant;
 use App\Models\Unit;
+use App\Models\User;
 use App\Models\Vendor;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -21,6 +22,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Seed Admin User
+        User::firstOrCreate(
+            ['email' => 'admin@pillarproperty.com'],
+            [
+                'name' => 'Admin User',
+                'password' => Hash::make('password'),
+            ]
+        );
+
         // Seed default branding settings
         Setting::set('company_name', 'Pillar Property Management', 'branding', 'string');
         Setting::set('support_email', 'support@pillarproperty.com', 'general', 'string');

@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MaintenanceRequest extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'unit_id', 'tenant_id', 'vendor_id', 'category', 'description',
         'photo_path', 'urgency', 'status', 'cost', 'resolved_at',

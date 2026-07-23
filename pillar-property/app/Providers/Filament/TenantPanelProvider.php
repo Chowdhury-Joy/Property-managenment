@@ -31,7 +31,7 @@ class TenantPanelProvider extends PanelProvider
             ->brandLogo(fn () => Setting::get('logo') ? asset('storage/'.Setting::get('logo')) : null)
             ->brandLogoHeight('2.5rem')
             ->colors([
-                'primary' => Color::Emerald,
+                'primary' => Color::hex(Setting::get('primary_color', '#1e3a8a')),
             ])
             ->discoverResources(in: app_path('Filament/Tenant/Resources'), for: 'App\\Filament\\Tenant\\Resources')
             ->discoverPages(in: app_path('Filament/Tenant/Pages'), for: 'App\\Filament\\Tenant\\Pages')

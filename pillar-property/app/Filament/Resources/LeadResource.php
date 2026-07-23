@@ -9,14 +9,26 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class LeadResource extends Resource
 {
     protected static ?string $model = Lead::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-inbox-stack';
+
     protected static ?string $navigationGroup = 'CRM';
+
     protected static ?int $navigationSort = 1;
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
+    }
 
     public static function form(Form $form): Form
     {
@@ -55,9 +67,9 @@ class LeadResource extends Resource
                 'new' => 'info', 'contacted' => 'warning', 'converted' => 'success', 'lost' => 'danger', default => 'gray',
             }),
             Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
-        ])->filters([])->actions([
-            Tables\Actions\EditAction::make(),
-        ]);
+        ])->filters([Tables\Filters\TrashedFilter::make()])->actions([
+            Tables\Actions\EditAction::make(), Tables\Actions\DeleteAction::make(), Tables\Actions\RestoreAction::make(), Tables\Actions\ForceDeleteAction::make(),
+        ])->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make(), Tables\Actions\RestoreBulkAction::make(), Tables\Actions\ForceDeleteBulkAction::make()])]);
     }
 
     public static function getRelations(): array

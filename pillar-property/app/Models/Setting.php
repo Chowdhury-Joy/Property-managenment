@@ -9,9 +9,7 @@ class Setting extends Model
 {
     protected $fillable = ['key', 'group', 'type', 'value'];
 
-    protected $casts = [
-        'value' => 'array', // Handles JSON casting automatically if type is json
-    ];
+    protected $casts = [];
 
     /**
      * Get a setting value by key.

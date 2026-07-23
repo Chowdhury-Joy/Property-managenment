@@ -32,7 +32,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogo(fn () => Setting::get('logo') ? asset('storage/'.Setting::get('logo')) : null)
             ->brandLogoHeight('2.5rem')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::hex(Setting::get('primary_color', '#1e3a8a')),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

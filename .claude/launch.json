@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "pillar-property",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "cd pillar-property && php artisan serve --port=8811"],
+      "port": 8811
+    }
+  ]
+}
