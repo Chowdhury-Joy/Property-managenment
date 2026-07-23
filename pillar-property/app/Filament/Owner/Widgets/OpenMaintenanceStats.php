@@ -11,11 +11,11 @@ class OpenMaintenanceStats extends BaseWidget
     protected function getStats(): array
     {
         $owner = auth()->guard('owner')->user();
-        if (!$owner) {
+        if (! $owner) {
             return [Stat::make('Open Maintenance Requests', 0)];
         }
 
-        $count = MaintenanceRequest::whereHas('unit.property', fn($q) => $q->where('owner_id', $owner->id))
+        $count = MaintenanceRequest::whereHas('unit.property', fn ($q) => $q->where('owner_id', $owner->id))
             ->whereIn('status', ['submitted', 'assigned', 'in_progress'])
             ->count();
 

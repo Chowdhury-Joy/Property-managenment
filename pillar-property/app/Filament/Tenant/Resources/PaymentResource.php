@@ -12,7 +12,9 @@ use Illuminate\Database\Eloquent\Builder;
 class PaymentResource extends Resource
 {
     protected static ?string $model = RentPayment::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+
     protected static ?string $navigationLabel = 'Payment History';
 
     // Scope to the logged-in tenant's active lease
@@ -33,7 +35,7 @@ class PaymentResource extends Resource
             Tables\Columns\TextColumn::make('amount')->money('USD'),
             Tables\Columns\TextColumn::make('status')
                 ->badge()
-                ->color(fn (string $state): string => match($state) {
+                ->color(fn (string $state): string => match ($state) {
                     'paid' => 'success',
                     'late' => 'danger',
                     default => 'warning',
@@ -41,7 +43,7 @@ class PaymentResource extends Resource
             Tables\Columns\TextColumn::make('paid_date')->date()->label('Paid On')->placeholder('Not paid'),
             Tables\Columns\TextColumn::make('method_note')->label('Method')->placeholder('-'),
         ])->actions([])
-        ->bulkActions([]);
+            ->bulkActions([]);
     }
 
     public static function getPages(): array
@@ -50,6 +52,9 @@ class PaymentResource extends Resource
             'index' => Pages\ListPayments::route('/'),
         ];
     }
-    
-    public static function canCreate(): bool { return false; }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
 }

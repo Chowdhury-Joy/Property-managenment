@@ -11,14 +11,14 @@ class RentSummaryStats extends BaseWidget
     protected function getStats(): array
     {
         $owner = auth()->guard('owner')->user();
-        if (!$owner) {
+        if (! $owner) {
             return [Stat::make('Rent Collected (This Month)', '$0.00')];
         }
 
         $currentMonth = now()->month;
         $currentYear = now()->year;
 
-        $query = RentPayment::whereHas('lease.unit.property', fn($q) => $q->where('owner_id', $owner->id))
+        $query = RentPayment::whereHas('lease.unit.property', fn ($q) => $q->where('owner_id', $owner->id))
             ->whereMonth('due_date', $currentMonth)
             ->whereYear('due_date', $currentYear);
 
@@ -26,8 +26,8 @@ class RentSummaryStats extends BaseWidget
         $collected = (clone $query)->where('status', 'paid')->sum('amount');
 
         return [
-            Stat::make('Rent Collected (This Month)', '$' . number_format($collected, 2))
-                ->description('Out of $' . number_format($owed, 2) . ' owed')
+            Stat::make('Rent Collected (This Month)', '$'.number_format($collected, 2))
+                ->description('Out of $'.number_format($owed, 2).' owed')
                 ->icon('heroicon-o-banknotes')
                 ->color('success'),
         ];

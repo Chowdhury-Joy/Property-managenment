@@ -29,7 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName(fn () => Setting::get('company_name', 'Pillar Property Management'))
-            ->brandLogo(fn () => Setting::get('logo') ? asset('storage/' . Setting::get('logo')) : null)
+            ->brandLogo(fn () => Setting::get('logo') ? asset('storage/'.Setting::get('logo')) : null)
             ->brandLogoHeight('2.5rem')
             ->colors([
                 'primary' => Color::Amber,

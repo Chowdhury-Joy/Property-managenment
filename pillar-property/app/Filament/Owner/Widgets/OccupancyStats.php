@@ -11,14 +11,14 @@ class OccupancyStats extends BaseWidget
     protected function getStats(): array
     {
         $owner = auth()->guard('owner')->user();
-        if (!$owner) {
+        if (! $owner) {
             return [Stat::make('Portfolio Occupancy', '0%')];
         }
 
         $totalUnits = $owner->properties()->withCount('units')->get()->sum('units_count');
-        $occupiedUnits = Unit::whereHas('property', fn($q) => $q->where('owner_id', $owner->id))
-                                        ->where('status', 'occupied')->count();
-        
+        $occupiedUnits = Unit::whereHas('property', fn ($q) => $q->where('owner_id', $owner->id))
+            ->where('status', 'occupied')->count();
+
         $rate = $totalUnits > 0 ? round(($occupiedUnits / $totalUnits) * 100) : 0;
 
         return [

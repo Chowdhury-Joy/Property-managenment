@@ -14,7 +14,9 @@ class LeadResource extends Resource
 {
     protected static ?string $model = Lead::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-plus';
+    protected static ?string $navigationIcon = 'heroicon-o-inbox-stack';
+    protected static ?string $navigationGroup = 'CRM';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -34,7 +36,7 @@ class LeadResource extends Resource
             ])->columns(2),
             Forms\Components\Section::make('Staff Follow-up')->schema([
                 Forms\Components\Select::make('status')->options([
-                    'new' => 'New', 'contacted' => 'Contacted', 'proposal_sent' => 'Proposal Sent', 
+                    'new' => 'New', 'contacted' => 'Contacted', 'proposal_sent' => 'Proposal Sent',
                     'converted' => 'Converted', 'lost' => 'Lost',
                 ])->default('new')->required(),
                 Forms\Components\Textarea::make('staff_notes')->label('Internal Notes')->columnSpanFull(),
@@ -49,7 +51,7 @@ class LeadResource extends Resource
             Tables\Columns\TextColumn::make('email')->searchable(),
             Tables\Columns\TextColumn::make('property_address')->searchable()->limit(30),
             Tables\Columns\TextColumn::make('property_type')->badge(),
-            Tables\Columns\TextColumn::make('status')->badge()->color(fn (string $state): string => match($state) {
+            Tables\Columns\TextColumn::make('status')->badge()->color(fn (string $state): string => match ($state) {
                 'new' => 'info', 'contacted' => 'warning', 'converted' => 'success', 'lost' => 'danger', default => 'gray',
             }),
             Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),

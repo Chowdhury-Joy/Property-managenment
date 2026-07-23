@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UnitResource\Pages;
+use App\Filament\Resources\UnitResource\RelationManagers\LeasesRelationManager;
 use App\Models\Unit;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -15,6 +16,8 @@ class UnitResource extends Resource
     protected static ?string $model = Unit::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
+    protected static ?string $navigationGroup = 'Property Management';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -39,7 +42,7 @@ class UnitResource extends Resource
             Tables\Columns\TextColumn::make('name')->label('Unit')->searchable(),
             Tables\Columns\TextColumn::make('bedrooms')->suffix(' bed'),
             Tables\Columns\TextColumn::make('bathrooms')->suffix(' bath'),
-            Tables\Columns\TextColumn::make('status')->badge()->color(fn (string $state): string => match($state) {
+            Tables\Columns\TextColumn::make('status')->badge()->color(fn (string $state): string => match ($state) {
                 'vacant' => 'warning', 'occupied' => 'success', 'maintenance' => 'danger', default => 'gray',
             }),
         ])->filters([])->actions([Tables\Actions\EditAction::make()]);
@@ -48,7 +51,7 @@ class UnitResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            LeasesRelationManager::class,
         ];
     }
 

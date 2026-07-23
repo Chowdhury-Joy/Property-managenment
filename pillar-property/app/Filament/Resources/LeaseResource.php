@@ -15,6 +15,8 @@ class LeaseResource extends Resource
     protected static ?string $model = Lease::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationGroup = 'Leasing';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -40,7 +42,9 @@ class LeaseResource extends Resource
             Tables\Columns\TextColumn::make('unit.name')->label('Unit'),
             Tables\Columns\TextColumn::make('tenant.name')->searchable(),
             Tables\Columns\TextColumn::make('rent_amount')->money('USD'),
-            Tables\Columns\TextColumn::make('status')->badge(),
+            Tables\Columns\TextColumn::make('status')->badge()->color(fn (string $state): string => match ($state) {
+                'draft' => 'gray', 'active' => 'success', 'ending_soon' => 'warning', 'ended' => 'info', 'terminated' => 'danger', default => 'gray',
+            }),
             Tables\Columns\TextColumn::make('end_date')->date(),
         ])->filters([])->actions([Tables\Actions\EditAction::make()]);
     }

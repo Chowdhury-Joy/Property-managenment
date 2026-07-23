@@ -8,11 +8,17 @@ use Livewire\Component;
 class RequestRentalAnalysis extends Component
 {
     public $name = '';
+
     public $email = '';
+
     public $phone = '';
+
     public $property_address = '';
+
     public $property_type = 'single_family';
+
     public $current_rent = '';
+
     public $reason_for_switching = '';
 
     public $successMessage = false;

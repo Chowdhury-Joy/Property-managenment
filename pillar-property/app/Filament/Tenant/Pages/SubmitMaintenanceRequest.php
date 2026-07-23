@@ -3,17 +3,20 @@
 namespace App\Filament\Tenant\Pages;
 
 use App\Models\MaintenanceRequest;
+use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Form;
-use Filament\Pages\Page;
 use Filament\Notifications\Notification;
+use Filament\Pages\Page;
 
 class SubmitMaintenanceRequest extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
+
     protected static string $view = 'filament.tenant.pages.submit-maintenance-request';
+
     protected static ?string $navigationLabel = 'Submit Request';
 
     public ?array $data = [];
@@ -29,7 +32,7 @@ class SubmitMaintenanceRequest extends Page
             ->schema([
                 Select::make('category')
                     ->options([
-                        'plumbing' => 'Plumbing', 'electrical' => 'Electrical', 
+                        'plumbing' => 'Plumbing', 'electrical' => 'Electrical',
                         'appliance' => 'Appliance', 'hvac' => 'HVAC', 'other' => 'Other',
                     ])->required(),
                 Select::make('urgency')
@@ -47,8 +50,9 @@ class SubmitMaintenanceRequest extends Page
         $tenant = auth()->guard('tenant')->user();
         $activeLease = $tenant ? $tenant->activeLease : null;
 
-        if (!$activeLease) {
+        if (! $activeLease) {
             Notification::make()->title('No active lease found.')->danger()->send();
+
             return;
         }
 
@@ -76,7 +80,7 @@ class SubmitMaintenanceRequest extends Page
     protected function getFormActions(): array
     {
         return [
-            \Filament\Actions\Action::make('submit')
+            Action::make('submit')
                 ->label('Submit Request')
                 ->action('submit'),
         ];

@@ -24,7 +24,7 @@ class ListRentPayments extends ListRecords
                 ->modalDescription('This will create rent records for all active leases for the current month if they don\'t already exist.')
                 ->action(function () {
                     Artisan::call('rent:generate');
-                    
+
                     Notification::make()
                         ->title('Invoices Generated')
                         ->body('Monthly rent records have been created for all active leases.')

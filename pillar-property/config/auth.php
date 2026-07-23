@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Owner;
+use App\Models\Tenant;
 use App\Models\User;
 
 return [
@@ -76,11 +78,11 @@ return [
         ],
         'owners' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Owner::class,
+            'model' => Owner::class,
         ],
         'tenants' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Tenant::class,
+            'model' => Tenant::class,
         ],
     ],
 

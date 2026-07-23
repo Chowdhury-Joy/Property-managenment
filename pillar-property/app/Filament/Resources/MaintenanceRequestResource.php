@@ -15,6 +15,8 @@ class MaintenanceRequestResource extends Resource
     protected static ?string $model = MaintenanceRequest::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
+    protected static ?string $navigationGroup = 'Maintenance';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -43,10 +45,12 @@ class MaintenanceRequestResource extends Resource
         return $table->columns([
             Tables\Columns\TextColumn::make('unit.property.name')->label('Property')->searchable(),
             Tables\Columns\TextColumn::make('category')->badge(),
-            Tables\Columns\TextColumn::make('urgency')->badge()->color(fn (string $state): string => match($state) {
+            Tables\Columns\TextColumn::make('urgency')->badge()->color(fn (string $state): string => match ($state) {
                 'emergency' => 'danger', 'urgent' => 'warning', default => 'gray',
             }),
-            Tables\Columns\TextColumn::make('status')->badge(),
+            Tables\Columns\TextColumn::make('status')->badge()->color(fn (string $state): string => match ($state) {
+                'submitted' => 'gray', 'assigned' => 'warning', 'in_progress' => 'info', 'resolved' => 'success', default => 'gray',
+            }),
             Tables\Columns\TextColumn::make('vendor.name')->label('Assigned To'),
             Tables\Columns\TextColumn::make('cost')->money('USD'),
             Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),

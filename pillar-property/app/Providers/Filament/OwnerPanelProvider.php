@@ -2,16 +2,15 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Owner\Pages\Dashboard;
 use App\Models\Setting;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -29,7 +28,7 @@ class OwnerPanelProvider extends PanelProvider
             ->login()
             ->authGuard('owner')
             ->brandName(fn () => Setting::get('company_name', 'Pillar Property Management'))
-            ->brandLogo(fn () => Setting::get('logo') ? asset('storage/' . Setting::get('logo')) : null)
+            ->brandLogo(fn () => Setting::get('logo') ? asset('storage/'.Setting::get('logo')) : null)
             ->brandLogoHeight('2.5rem')
             ->colors([
                 'primary' => Color::Blue,
@@ -37,7 +36,7 @@ class OwnerPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Owner/Resources'), for: 'App\\Filament\\Owner\\Resources')
             ->discoverPages(in: app_path('Filament/Owner/Pages'), for: 'App\\Filament\\Owner\\Pages')
             ->pages([
-                \App\Filament\Owner\Pages\Dashboard::class,
+                Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Owner/Widgets'), for: 'App\\Filament\\Owner\\Widgets')
             ->widgets([])

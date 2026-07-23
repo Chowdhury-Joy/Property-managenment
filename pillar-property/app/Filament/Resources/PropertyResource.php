@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PropertyResource\Pages;
+use App\Filament\Resources\PropertyResource\RelationManagers\UnitsRelationManager;
 use App\Models\Property;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -15,6 +16,8 @@ class PropertyResource extends Resource
     protected static ?string $model = Property::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-home-modern';
+    protected static ?string $navigationGroup = 'Property Management';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -54,7 +57,7 @@ class PropertyResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            UnitsRelationManager::class,
         ];
     }
 

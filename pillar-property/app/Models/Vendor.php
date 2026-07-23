@@ -8,5 +8,8 @@ class Vendor extends Model
 {
     protected $fillable = ['name', 'trade', 'phone', 'email'];
 
-    public function maintenanceRequests() { return $this->hasMany(MaintenanceRequest::class); }
+    public function maintenanceRequests()
+    {
+        return $this->hasMany(MaintenanceRequest::class);
+    }
 }

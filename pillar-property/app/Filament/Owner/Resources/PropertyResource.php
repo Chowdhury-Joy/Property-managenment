@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 class PropertyResource extends Resource
 {
     protected static ?string $model = Property::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
 
     public static function getEloquentQuery(): Builder
@@ -39,6 +40,9 @@ class PropertyResource extends Resource
             'view' => Pages\ViewProperty::route('/{record}'),
         ];
     }
-    
-    public static function canCreate(): bool { return false; }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
 }

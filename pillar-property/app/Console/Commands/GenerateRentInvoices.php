@@ -4,12 +4,13 @@ namespace App\Console\Commands;
 
 use App\Models\Lease;
 use App\Models\RentPayment;
-use Illuminate\Console\Command;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
 
 class GenerateRentInvoices extends Command
 {
     protected $signature = 'rent:generate';
+
     protected $description = 'Generate monthly rent payment records for all active leases';
 
     public function handle()
@@ -22,7 +23,7 @@ class GenerateRentInvoices extends Command
         foreach ($activeLeases as $lease) {
             // Calculate the due date for the current month
             $dueDate = Carbon::now()->day($lease->due_day);
-            
+
             // If today is past the due date, we still generate it for this month
             $month = $dueDate->month;
             $year = $dueDate->year;
@@ -33,7 +34,7 @@ class GenerateRentInvoices extends Command
                 ->whereYear('due_date', $year)
                 ->exists();
 
-            if (!$exists) {
+            if (! $exists) {
                 // Determine status: if today is past the due date, it's late. Otherwise, upcoming.
                 $status = Carbon::now()->greaterThan($dueDate) ? 'late' : 'upcoming';
 
@@ -48,6 +49,7 @@ class GenerateRentInvoices extends Command
         }
 
         $this->info("Successfully generated {$generated} new rent invoices.");
+
         return 0;
     }
 }

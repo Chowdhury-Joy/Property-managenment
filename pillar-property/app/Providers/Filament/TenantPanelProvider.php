@@ -11,7 +11,6 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -29,7 +28,7 @@ class TenantPanelProvider extends PanelProvider
             ->login()
             ->authGuard('tenant')
             ->brandName(fn () => Setting::get('company_name', 'Pillar Property Management'))
-            ->brandLogo(fn () => Setting::get('logo') ? asset('storage/' . Setting::get('logo')) : null)
+            ->brandLogo(fn () => Setting::get('logo') ? asset('storage/'.Setting::get('logo')) : null)
             ->brandLogoHeight('2.5rem')
             ->colors([
                 'primary' => Color::Emerald,

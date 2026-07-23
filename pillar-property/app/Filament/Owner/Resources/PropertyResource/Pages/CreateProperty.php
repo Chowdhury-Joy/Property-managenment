@@ -3,7 +3,6 @@
 namespace App\Filament\Owner\Resources\PropertyResource\Pages;
 
 use App\Filament\Owner\Resources\PropertyResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateProperty extends CreateRecord

@@ -17,7 +17,7 @@ class Property extends Model
     {
         return $this->hasMany(Unit::class);
     }
-    
+
     // Helper to get full address
     public function getFullAddressAttribute(): string
     {

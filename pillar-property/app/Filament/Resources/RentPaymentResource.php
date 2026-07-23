@@ -15,6 +15,9 @@ class RentPaymentResource extends Resource
     protected static ?string $model = RentPayment::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
+    protected static ?string $navigationGroup = 'Financials';
+    protected static ?int $navigationSort = 1;
+
     protected static ?string $navigationLabel = 'Rent Payments';
 
     public static function form(Form $form): Form
@@ -48,7 +51,7 @@ class RentPaymentResource extends Resource
             Tables\Columns\TextColumn::make('amount')->money('USD'),
             Tables\Columns\TextColumn::make('status')
                 ->badge()
-                ->color(fn (string $state): string => match($state) {
+                ->color(fn (string $state): string => match ($state) {
                     'paid' => 'success',
                     'late' => 'danger',
                     default => 'warning',

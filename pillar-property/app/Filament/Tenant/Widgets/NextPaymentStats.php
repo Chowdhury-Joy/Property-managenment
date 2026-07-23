@@ -11,7 +11,7 @@ class NextPaymentStats extends BaseWidget
     protected function getStats(): array
     {
         $tenant = auth()->guard('tenant')->user();
-        if (!$tenant || !$tenant->activeLease) {
+        if (! $tenant || ! $tenant->activeLease) {
             return [
                 Stat::make('Next Payment', 'No Active Lease')
                     ->description('No active lease found.')
@@ -25,7 +25,7 @@ class NextPaymentStats extends BaseWidget
             ->orderBy('due_date')
             ->first();
 
-        if (!$nextPayment) {
+        if (! $nextPayment) {
             return [
                 Stat::make('Next Payment', 'All Caught Up!')
                     ->description('No upcoming payments due.')
@@ -38,8 +38,8 @@ class NextPaymentStats extends BaseWidget
         $statusText = $nextPayment->status === 'late' ? 'OVERDUE' : 'Upcoming';
 
         return [
-            Stat::make('Next Payment Due', '$' . number_format($nextPayment->amount, 2))
-                ->description("{$statusText} on " . $nextPayment->due_date->format('M j, Y'))
+            Stat::make('Next Payment Due', '$'.number_format($nextPayment->amount, 2))
+                ->description("{$statusText} on ".$nextPayment->due_date->format('M j, Y'))
                 ->color($statusColor)
                 ->icon('heroicon-o-calendar-days'),
         ];

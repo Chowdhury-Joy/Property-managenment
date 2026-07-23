@@ -14,5 +14,8 @@ class RentPayment extends Model
         'amount' => 'decimal:2',
     ];
 
-    public function lease() { return $this->belongsTo(Lease::class); }
+    public function lease()
+    {
+        return $this->belongsTo(Lease::class);
+    }
 }

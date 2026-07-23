@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\Setting;
+use Filament\Actions\Action;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
@@ -14,7 +15,9 @@ use Filament\Pages\Page;
 class Settings extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
+
     protected static string $view = 'filament.pages.settings';
+
     protected static ?int $navigationSort = 1; // Puts it at the top of the sidebar
 
     public ?array $data = [];
@@ -95,7 +98,7 @@ class Settings extends Page
     protected function getFormActions(): array
     {
         return [
-            \Filament\Actions\Action::make('save')
+            Action::make('save')
                 ->label('Save Settings')
                 ->action('save'),
         ];

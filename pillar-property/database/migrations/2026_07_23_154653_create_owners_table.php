@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone')->nullable();
             // Portal access fields (we'll wire up actual auth later)
-            $table->string('password')->nullable(); 
+            $table->string('password')->nullable();
             $table->timestamp('portal_enabled_at')->nullable();
             $table->timestamps();
         });
