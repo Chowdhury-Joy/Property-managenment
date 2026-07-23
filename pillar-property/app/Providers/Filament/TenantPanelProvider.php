@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Models\Setting;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -27,6 +28,9 @@ class TenantPanelProvider extends PanelProvider
             ->path('tenant')
             ->login()
             ->authGuard('tenant')
+            ->brandName(fn () => Setting::get('company_name', 'Pillar Property Management'))
+            ->brandLogo(fn () => Setting::get('logo') ? asset('storage/' . Setting::get('logo')) : null)
+            ->brandLogoHeight('2.5rem')
             ->colors([
                 'primary' => Color::Emerald,
             ])
