@@ -3,6 +3,7 @@
 namespace App\Filament\Owner\Resources;
 
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Actions\ViewAction;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
@@ -11,6 +12,7 @@ use App\Filament\Owner\Resources\PropertyResource\Pages\ViewProperty;
 use App\Filament\Owner\Resources\PropertyResource\Pages;
 use App\Models\Property;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ImageEntry;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -30,6 +32,7 @@ class PropertyResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
+            ImageColumn::make('image'),
             TextColumn::make('name')->searchable(),
             TextColumn::make('address')->searchable()->limit(30),
             TextColumn::make('type')->badge()->formatStateUsing(fn (string $state) => ucfirst(str_replace('_', ' ', $state))),
@@ -46,6 +49,7 @@ class PropertyResource extends Resource
             ->components([
                 Section::make('Property Details')
                     ->schema([
+                        ImageEntry::make('image')->hiddenLabel(),
                         TextEntry::make('name'),
                         TextEntry::make('address'),
                         TextEntry::make('city'),

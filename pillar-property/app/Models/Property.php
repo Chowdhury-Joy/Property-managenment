@@ -9,7 +9,7 @@ class Property extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['owner_id', 'name', 'address', 'city', 'state', 'zip', 'type', 'status'];
+    protected $fillable = ['owner_id', 'name', 'address', 'city', 'state', 'zip', 'type', 'status', 'image'];
 
     public function owner()
     {

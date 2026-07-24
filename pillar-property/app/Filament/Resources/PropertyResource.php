@@ -5,7 +5,9 @@ namespace App\Filament\Resources;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
@@ -62,6 +64,9 @@ class PropertyResource extends Resource
                 'multi_unit' => 'Multi-Unit',
                 'commercial' => 'Commercial',
             ])->required(),
+            FileUpload::make('image')
+                ->image()
+                ->directory('properties'),
             Select::make('status')->options([
                 'active' => 'Active', 'inactive' => 'Inactive',
             ])->default('active')->required(),
@@ -71,6 +76,7 @@ class PropertyResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
+            ImageColumn::make('image'),
             TextColumn::make('name')->searchable(),
             TextColumn::make('owner.name')->searchable(),
             TextColumn::make('type')->badge(),
