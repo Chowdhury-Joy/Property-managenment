@@ -4,13 +4,13 @@ namespace App\Filament\Owner\Resources;
 
 use App\Filament\Owner\Resources\PropertyResource\Pages;
 use App\Models\Property;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Infolists\Infolist;
-use Filament\Infolists\Components\Section;
-use Filament\Infolists\Components\TextEntry;
 
 class PropertyResource extends Resource
 {
@@ -28,7 +28,7 @@ class PropertyResource extends Resource
         return $table->columns([
             Tables\Columns\TextColumn::make('name')->searchable(),
             Tables\Columns\TextColumn::make('address')->searchable()->limit(30),
-            Tables\Columns\TextColumn::make('type')->badge(),
+            Tables\Columns\TextColumn::make('type')->badge()->formatStateUsing(fn (string $state) => ucfirst(str_replace('_', ' ', $state))),
             Tables\Columns\TextColumn::make('units_count')->counts('units')->label('Units'),
             Tables\Columns\TextColumn::make('status')->badge()->color(fn (string $state): string => $state === 'active' ? 'success' : 'gray'),
         ])->actions([
@@ -47,7 +47,7 @@ class PropertyResource extends Resource
                         TextEntry::make('city'),
                         TextEntry::make('state'),
                         TextEntry::make('zip'),
-                        TextEntry::make('type')->badge(),
+                        TextEntry::make('type')->badge()->formatStateUsing(fn (string $state) => ucfirst(str_replace('_', ' ', $state))),
                         TextEntry::make('status')->badge()->color(fn (string $state): string => $state === 'active' ? 'success' : 'gray'),
                     ])->columns(2),
             ]);

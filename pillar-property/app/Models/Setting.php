@@ -17,7 +17,14 @@ class Setting extends Model
     public static function get(string $key, $default = null)
     {
         return Cache::remember("setting.{$key}", 3600, function () use ($key, $default) {
-            $setting = static::where('key', $key)->first();
+            // Settings are read from the public layout on every request, including
+            // before the `settings` table exists (fresh install, mid-migration) —
+            // fall back to $default instead of a hard 500 in that window.
+            try {
+                $setting = static::where('key', $key)->first();
+            } catch (\Exception $e) {
+                return $default;
+            }
 
             if (! $setting) {
                 return $default;
