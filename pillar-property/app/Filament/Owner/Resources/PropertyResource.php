@@ -2,11 +2,15 @@
 
 namespace App\Filament\Owner\Resources;
 
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\ViewAction;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use App\Filament\Owner\Resources\PropertyResource\Pages\ListProperties;
+use App\Filament\Owner\Resources\PropertyResource\Pages\ViewProperty;
 use App\Filament\Owner\Resources\PropertyResource\Pages;
 use App\Models\Property;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -16,7 +20,7 @@ class PropertyResource extends Resource
 {
     protected static ?string $model = Property::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-building-office-2';
 
     public static function getEloquentQuery(): Builder
     {
@@ -26,20 +30,20 @@ class PropertyResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
-            Tables\Columns\TextColumn::make('name')->searchable(),
-            Tables\Columns\TextColumn::make('address')->searchable()->limit(30),
-            Tables\Columns\TextColumn::make('type')->badge()->formatStateUsing(fn (string $state) => ucfirst(str_replace('_', ' ', $state))),
-            Tables\Columns\TextColumn::make('units_count')->counts('units')->label('Units'),
-            Tables\Columns\TextColumn::make('status')->badge()->color(fn (string $state): string => $state === 'active' ? 'success' : 'gray'),
-        ])->actions([
-            Tables\Actions\ViewAction::make(),
+            TextColumn::make('name')->searchable(),
+            TextColumn::make('address')->searchable()->limit(30),
+            TextColumn::make('type')->badge()->formatStateUsing(fn (string $state) => ucfirst(str_replace('_', ' ', $state))),
+            TextColumn::make('units_count')->counts('units')->label('Units'),
+            TextColumn::make('status')->badge()->color(fn (string $state): string => $state === 'active' ? 'success' : 'gray'),
+        ])->recordActions([
+            ViewAction::make(),
         ]);
     }
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
+        return $schema
+            ->components([
                 Section::make('Property Details')
                     ->schema([
                         TextEntry::make('name'),
@@ -56,8 +60,8 @@ class PropertyResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProperties::route('/'),
-            'view' => Pages\ViewProperty::route('/{record}'),
+            'index' => ListProperties::route('/'),
+            'view' => ViewProperty::route('/{record}'),
         ];
     }
 

@@ -2,10 +2,26 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TrashedFilter;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use App\Filament\Resources\RentPaymentResource\Pages\ListRentPayments;
+use App\Filament\Resources\RentPaymentResource\Pages\CreateRentPayment;
+use App\Filament\Resources\RentPaymentResource\Pages\EditRentPayment;
 use App\Filament\Resources\RentPaymentResource\Pages;
 use App\Models\RentPayment;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -16,9 +32,9 @@ class RentPaymentResource extends Resource
 {
     protected static ?string $model = RentPayment::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-currency-dollar';
 
-    protected static ?string $navigationGroup = 'Financials';
+    protected static string | \UnitEnum | null $navigationGroup = 'Financials';
 
     protected static ?int $navigationSort = 1;
 
@@ -32,47 +48,47 @@ class RentPaymentResource extends Resource
             ]);
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form->schema([
-            Forms\Components\Select::make('lease_id')
+        return $schema->components([
+            Select::make('lease_id')
                 ->relationship('lease', 'id')
                 ->getOptionLabelFromRecordUsing(fn ($record) => "Lease #{$record->id} - {$record->unit?->property?->name} ({$record->unit?->name}) - {$record->tenant?->name}")
                 ->required()
                 ->searchable()
                 ->preload(),
-            Forms\Components\TextInput::make('amount')->numeric()->prefix('$')->required(),
-            Forms\Components\DatePicker::make('due_date')->required(),
-            Forms\Components\DatePicker::make('paid_date'),
-            Forms\Components\Select::make('status')->options([
+            TextInput::make('amount')->numeric()->prefix('$')->required(),
+            DatePicker::make('due_date')->required(),
+            DatePicker::make('paid_date'),
+            Select::make('status')->options([
                 'upcoming' => 'Upcoming',
                 'paid' => 'Paid',
                 'late' => 'Late',
             ])->default('upcoming')->required(),
-            Forms\Components\TextInput::make('method_note')->label('Payment Method / Note')->placeholder('e.g., Zelle, Check #102'),
+            TextInput::make('method_note')->label('Payment Method / Note')->placeholder('e.g., Zelle, Check #102'),
         ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table->columns([
-            Tables\Columns\TextColumn::make('lease.unit.property.name')->label('Property')->searchable(),
-            Tables\Columns\TextColumn::make('lease.unit.name')->label('Unit'),
-            Tables\Columns\TextColumn::make('lease.tenant.name')->label('Tenant')->searchable(),
-            Tables\Columns\TextColumn::make('due_date')->date()->sortable(),
-            Tables\Columns\TextColumn::make('amount')->money('USD'),
-            Tables\Columns\TextColumn::make('status')
+            TextColumn::make('lease.unit.property.name')->label('Property')->searchable(),
+            TextColumn::make('lease.unit.name')->label('Unit'),
+            TextColumn::make('lease.tenant.name')->label('Tenant')->searchable(),
+            TextColumn::make('due_date')->date()->sortable(),
+            TextColumn::make('amount')->money('USD'),
+            TextColumn::make('status')
                 ->badge()
                 ->color(fn (string $state): string => match ($state) {
                     'paid' => 'success',
                     'late' => 'danger',
                     default => 'warning',
                 }),
-            Tables\Columns\TextColumn::make('paid_date')->date()->placeholder('Unpaid'),
-            Tables\Columns\TextColumn::make('method_note')->label('Method')->placeholder('-'),
-        ])->filters([Tables\Filters\TrashedFilter::make()])->actions([
-            Tables\Actions\EditAction::make(), Tables\Actions\DeleteAction::make(), Tables\Actions\RestoreAction::make(), Tables\Actions\ForceDeleteAction::make(),
-        ])->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make(), Tables\Actions\RestoreBulkAction::make(), Tables\Actions\ForceDeleteBulkAction::make()])]);
+            TextColumn::make('paid_date')->date()->placeholder('Unpaid'),
+            TextColumn::make('method_note')->label('Method')->placeholder('-'),
+        ])->filters([TrashedFilter::make()])->recordActions([
+            EditAction::make(), DeleteAction::make(), RestoreAction::make(), ForceDeleteAction::make(),
+        ])->toolbarActions([BulkActionGroup::make([DeleteBulkAction::make(), RestoreBulkAction::make(), ForceDeleteBulkAction::make()])]);
     }
 
     public static function getRelations(): array
@@ -83,9 +99,9 @@ class RentPaymentResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListRentPayments::route('/'),
-            'create' => Pages\CreateRentPayment::route('/create'),
-            'edit' => Pages\EditRentPayment::route('/{record}/edit'),
+            'index' => ListRentPayments::route('/'),
+            'create' => CreateRentPayment::route('/create'),
+            'edit' => EditRentPayment::route('/{record}/edit'),
         ];
     }
 }

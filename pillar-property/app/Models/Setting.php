@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
@@ -22,7 +23,7 @@ class Setting extends Model
             // fall back to $default instead of a hard 500 in that window.
             try {
                 $setting = static::where('key', $key)->first();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 return $default;
             }
 

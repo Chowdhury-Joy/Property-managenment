@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\RentPaymentResource\Pages;
 
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
 use App\Filament\Resources\RentPaymentResource;
 use Filament\Actions;
 use Filament\Notifications\Notification;
@@ -15,7 +17,7 @@ class ListRentPayments extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('generateInvoices')
+            Action::make('generateInvoices')
                 ->label('Generate Monthly Invoices')
                 ->icon('heroicon-o-sparkles')
                 ->color('primary')
@@ -31,7 +33,7 @@ class ListRentPayments extends ListRecords
                         ->success()
                         ->send();
                 }),
-            Actions\CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 }

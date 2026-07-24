@@ -2,8 +2,16 @@
 
 namespace App\Filament\Resources\PropertyResource\RelationManagers;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\CreateAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -14,15 +22,15 @@ class UnitsRelationManager extends RelationManager
 
     // Mirrors UnitResource::form() minus property_id, which this relation
     // manager already scopes to the parent Property automatically.
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')->label('Unit Name (e.g. Unit A, or leave blank for Single Family)'),
-                Forms\Components\TextInput::make('bedrooms')->numeric()->default(0),
-                Forms\Components\TextInput::make('bathrooms')->numeric()->default(0),
-                Forms\Components\TextInput::make('sqft')->numeric(),
-                Forms\Components\Select::make('status')->options([
+        return $schema
+            ->components([
+                TextInput::make('name')->label('Unit Name (e.g. Unit A, or leave blank for Single Family)'),
+                TextInput::make('bedrooms')->numeric()->default(0),
+                TextInput::make('bathrooms')->numeric()->default(0),
+                TextInput::make('sqft')->numeric(),
+                Select::make('status')->options([
                     'vacant' => 'Vacant', 'occupied' => 'Occupied', 'maintenance' => 'Under Maintenance',
                 ])->default('vacant')->required(),
             ]);
@@ -33,10 +41,10 @@ class UnitsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('name')->label('Unit')->searchable(),
-                Tables\Columns\TextColumn::make('bedrooms')->suffix(' bed'),
-                Tables\Columns\TextColumn::make('bathrooms')->suffix(' bath'),
-                Tables\Columns\TextColumn::make('status')->badge()->color(fn (string $state): string => match ($state) {
+                TextColumn::make('name')->label('Unit')->searchable(),
+                TextColumn::make('bedrooms')->suffix(' bed'),
+                TextColumn::make('bathrooms')->suffix(' bath'),
+                TextColumn::make('status')->badge()->color(fn (string $state): string => match ($state) {
                     'vacant' => 'warning', 'occupied' => 'success', 'maintenance' => 'danger', default => 'gray',
                 }),
             ])
@@ -44,15 +52,15 @@ class UnitsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                CreateAction::make(),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+            ->recordActions([
+                EditAction::make(),
+                DeleteAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

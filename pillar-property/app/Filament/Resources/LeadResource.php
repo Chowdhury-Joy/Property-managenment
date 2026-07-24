@@ -2,10 +2,27 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TrashedFilter;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use App\Filament\Resources\LeadResource\Pages\ListLeads;
+use App\Filament\Resources\LeadResource\Pages\CreateLead;
+use App\Filament\Resources\LeadResource\Pages\EditLead;
 use App\Filament\Resources\LeadResource\Pages;
 use App\Models\Lead;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -16,9 +33,9 @@ class LeadResource extends Resource
 {
     protected static ?string $model = Lead::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-inbox-stack';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-inbox-stack';
 
-    protected static ?string $navigationGroup = 'CRM';
+    protected static string | \UnitEnum | null $navigationGroup = 'CRM';
 
     protected static ?int $navigationSort = 1;
 
@@ -30,28 +47,28 @@ class LeadResource extends Resource
             ]);
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form->schema([
-            Forms\Components\Section::make('Contact Info')->schema([
-                Forms\Components\TextInput::make('name')->required(),
-                Forms\Components\TextInput::make('email')->email()->required(),
-                Forms\Components\TextInput::make('phone')->tel(),
+        return $schema->components([
+            Section::make('Contact Info')->schema([
+                TextInput::make('name')->required(),
+                TextInput::make('email')->email()->required(),
+                TextInput::make('phone')->tel(),
             ])->columns(3),
-            Forms\Components\Section::make('Property Details')->schema([
-                Forms\Components\TextInput::make('property_address')->required()->columnSpanFull(),
-                Forms\Components\Select::make('property_type')->options([
+            Section::make('Property Details')->schema([
+                TextInput::make('property_address')->required()->columnSpanFull(),
+                Select::make('property_type')->options([
                     'single_family' => 'Single Family', 'multi_unit' => 'Multi-Unit', 'commercial' => 'Commercial',
                 ])->required(),
-                Forms\Components\TextInput::make('current_rent')->label('Current Rent (or "Not sure")'),
-                Forms\Components\Textarea::make('reason_for_switching')->label('Why are they considering switching?')->columnSpanFull(),
+                TextInput::make('current_rent')->label('Current Rent (or "Not sure")'),
+                Textarea::make('reason_for_switching')->label('Why are they considering switching?')->columnSpanFull(),
             ])->columns(2),
-            Forms\Components\Section::make('Staff Follow-up')->schema([
-                Forms\Components\Select::make('status')->options([
+            Section::make('Staff Follow-up')->schema([
+                Select::make('status')->options([
                     'new' => 'New', 'contacted' => 'Contacted', 'proposal_sent' => 'Proposal Sent',
                     'converted' => 'Converted', 'lost' => 'Lost',
                 ])->default('new')->required(),
-                Forms\Components\Textarea::make('staff_notes')->label('Internal Notes')->columnSpanFull(),
+                Textarea::make('staff_notes')->label('Internal Notes')->columnSpanFull(),
             ])->columns(2),
         ]);
     }
@@ -59,17 +76,17 @@ class LeadResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
-            Tables\Columns\TextColumn::make('name')->searchable(),
-            Tables\Columns\TextColumn::make('email')->searchable(),
-            Tables\Columns\TextColumn::make('property_address')->searchable()->limit(30),
-            Tables\Columns\TextColumn::make('property_type')->badge(),
-            Tables\Columns\TextColumn::make('status')->badge()->color(fn (string $state): string => match ($state) {
+            TextColumn::make('name')->searchable(),
+            TextColumn::make('email')->searchable(),
+            TextColumn::make('property_address')->searchable()->limit(30),
+            TextColumn::make('property_type')->badge(),
+            TextColumn::make('status')->badge()->color(fn (string $state): string => match ($state) {
                 'new' => 'info', 'contacted' => 'warning', 'converted' => 'success', 'lost' => 'danger', default => 'gray',
             }),
-            Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
-        ])->filters([Tables\Filters\TrashedFilter::make()])->actions([
-            Tables\Actions\EditAction::make(), Tables\Actions\DeleteAction::make(), Tables\Actions\RestoreAction::make(), Tables\Actions\ForceDeleteAction::make(),
-        ])->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make(), Tables\Actions\RestoreBulkAction::make(), Tables\Actions\ForceDeleteBulkAction::make()])]);
+            TextColumn::make('created_at')->dateTime()->sortable(),
+        ])->filters([TrashedFilter::make()])->recordActions([
+            EditAction::make(), DeleteAction::make(), RestoreAction::make(), ForceDeleteAction::make(),
+        ])->toolbarActions([BulkActionGroup::make([DeleteBulkAction::make(), RestoreBulkAction::make(), ForceDeleteBulkAction::make()])]);
     }
 
     public static function getRelations(): array
@@ -82,9 +99,9 @@ class LeadResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListLeads::route('/'),
-            'create' => Pages\CreateLead::route('/create'),
-            'edit' => Pages\EditLead::route('/{record}/edit'),
+            'index' => ListLeads::route('/'),
+            'create' => CreateLead::route('/create'),
+            'edit' => EditLead::route('/{record}/edit'),
         ];
     }
 }

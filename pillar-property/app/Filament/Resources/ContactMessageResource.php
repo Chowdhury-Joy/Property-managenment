@@ -2,10 +2,20 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use App\Filament\Resources\ContactMessageResource\Pages\ManageContactMessages;
 use App\Filament\Resources\ContactMessageResource\Pages;
 use App\Models\ContactMessage;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -14,9 +24,9 @@ class ContactMessageResource extends Resource
 {
     protected static ?string $model = ContactMessage::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-envelope';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-envelope';
 
-    protected static ?string $navigationGroup = 'CRM';
+    protected static string | \UnitEnum | null $navigationGroup = 'CRM';
 
     protected static ?int $navigationSort = 2;
 
@@ -29,14 +39,14 @@ class ContactMessageResource extends Resource
         return false;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form->schema([
-            Forms\Components\TextInput::make('first_name')->required()->disabled(),
-            Forms\Components\TextInput::make('last_name')->required()->disabled(),
-            Forms\Components\TextInput::make('email')->email()->required()->disabled(),
-            Forms\Components\Textarea::make('message')->required()->disabled()->columnSpanFull(),
-            Forms\Components\Select::make('status')->options([
+        return $schema->components([
+            TextInput::make('first_name')->required()->disabled(),
+            TextInput::make('last_name')->required()->disabled(),
+            TextInput::make('email')->email()->required()->disabled(),
+            Textarea::make('message')->required()->disabled()->columnSpanFull(),
+            Select::make('status')->options([
                 'new' => 'New', 'read' => 'Read', 'replied' => 'Replied',
             ])->default('new')->required(),
         ]);
@@ -45,23 +55,23 @@ class ContactMessageResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
-            Tables\Columns\TextColumn::make('first_name')->label('Name')->formatStateUsing(fn ($record) => "{$record->first_name} {$record->last_name}")->searchable(['first_name', 'last_name']),
-            Tables\Columns\TextColumn::make('email')->searchable(),
-            Tables\Columns\TextColumn::make('message')->limit(50),
-            Tables\Columns\TextColumn::make('status')->badge()->color(fn (string $state): string => match ($state) {
+            TextColumn::make('first_name')->label('Name')->formatStateUsing(fn ($record) => "{$record->first_name} {$record->last_name}")->searchable(['first_name', 'last_name']),
+            TextColumn::make('email')->searchable(),
+            TextColumn::make('message')->limit(50),
+            TextColumn::make('status')->badge()->color(fn (string $state): string => match ($state) {
                 'new' => 'info', 'read' => 'warning', 'replied' => 'success', default => 'gray',
             }),
-            Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
+            TextColumn::make('created_at')->dateTime()->sortable(),
         ])->defaultSort('created_at', 'desc')->filters([
-            Tables\Filters\SelectFilter::make('status')->options([
+            SelectFilter::make('status')->options([
                 'new' => 'New', 'read' => 'Read', 'replied' => 'Replied',
             ]),
-        ])->actions([
-            Tables\Actions\EditAction::make(),
-            Tables\Actions\DeleteAction::make(),
-        ])->bulkActions([
-            Tables\Actions\BulkActionGroup::make([
-                Tables\Actions\DeleteBulkAction::make(),
+        ])->recordActions([
+            EditAction::make(),
+            DeleteAction::make(),
+        ])->toolbarActions([
+            BulkActionGroup::make([
+                DeleteBulkAction::make(),
             ]),
         ]);
     }
@@ -69,7 +79,7 @@ class ContactMessageResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageContactMessages::route('/'),
+            'index' => ManageContactMessages::route('/'),
         ];
     }
 }

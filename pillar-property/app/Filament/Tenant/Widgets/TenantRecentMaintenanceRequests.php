@@ -2,6 +2,7 @@
 
 namespace App\Filament\Tenant\Widgets;
 
+use Filament\Tables\Columns\TextColumn;
 use App\Models\MaintenanceRequest;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -24,12 +25,12 @@ class TenantRecentMaintenanceRequests extends BaseWidget
                     ->limit(5)
             )
             ->columns([
-                Tables\Columns\TextColumn::make('unit.name')
+                TextColumn::make('unit.name')
                     ->label('Unit')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('category')
+                TextColumn::make('category')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('urgency')
+                TextColumn::make('urgency')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'low' => 'info',
@@ -37,7 +38,7 @@ class TenantRecentMaintenanceRequests extends BaseWidget
                         'high', 'emergency' => 'danger',
                         default => 'gray',
                     }),
-                Tables\Columns\TextColumn::make('status')
+                TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'open' => 'danger',
@@ -46,7 +47,7 @@ class TenantRecentMaintenanceRequests extends BaseWidget
                         'cancelled' => 'gray',
                         default => 'gray',
                     }),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

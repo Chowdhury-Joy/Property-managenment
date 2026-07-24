@@ -2,6 +2,7 @@
 
 namespace App\Filament\Owner\Widgets;
 
+use Filament\Tables\Columns\TextColumn;
 use App\Models\MaintenanceRequest;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -26,15 +27,15 @@ class OwnerLatestMaintenanceRequests extends BaseWidget
                     ->limit(5)
             )
             ->columns([
-                Tables\Columns\TextColumn::make('unit.property.name')
+                TextColumn::make('unit.property.name')
                     ->label('Property')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('unit.name')
+                TextColumn::make('unit.name')
                     ->label('Unit')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('category')
+                TextColumn::make('category')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('urgency')
+                TextColumn::make('urgency')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'low' => 'info',
@@ -42,7 +43,7 @@ class OwnerLatestMaintenanceRequests extends BaseWidget
                         'high', 'emergency' => 'danger',
                         default => 'gray',
                     }),
-                Tables\Columns\TextColumn::make('status')
+                TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'open' => 'danger',
@@ -51,7 +52,7 @@ class OwnerLatestMaintenanceRequests extends BaseWidget
                         'cancelled' => 'gray',
                         default => 'gray',
                     }),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

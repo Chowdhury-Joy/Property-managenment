@@ -2,8 +2,18 @@
 
 namespace App\Filament\Resources\UnitResource\RelationManagers;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\CreateAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -14,24 +24,24 @@ class LeasesRelationManager extends RelationManager
 
     // Mirrors LeaseResource::form() minus unit_id, which this relation manager
     // already scopes to the parent Unit automatically.
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('tenant_id')
+        return $schema
+            ->components([
+                Select::make('tenant_id')
                     ->relationship('tenant', 'name')
                     ->required()
                     ->searchable()
                     ->preload(),
-                Forms\Components\DatePicker::make('start_date')->required(),
-                Forms\Components\DatePicker::make('end_date')->required(),
-                Forms\Components\TextInput::make('rent_amount')->numeric()->prefix('$')->required(),
-                Forms\Components\TextInput::make('due_day')->numeric()->minValue(1)->maxValue(28)->default(1)->label('Due Day of Month'),
-                Forms\Components\TextInput::make('security_deposit')->numeric()->prefix('$')->default(0),
-                Forms\Components\Select::make('status')->options([
+                DatePicker::make('start_date')->required(),
+                DatePicker::make('end_date')->required(),
+                TextInput::make('rent_amount')->numeric()->prefix('$')->required(),
+                TextInput::make('due_day')->numeric()->minValue(1)->maxValue(28)->default(1)->label('Due Day of Month'),
+                TextInput::make('security_deposit')->numeric()->prefix('$')->default(0),
+                Select::make('status')->options([
                     'draft' => 'Draft', 'active' => 'Active', 'ending_soon' => 'Ending Soon', 'ended' => 'Ended', 'terminated' => 'Terminated',
                 ])->default('active')->required(),
-                Forms\Components\FileUpload::make('document_path')->label('Lease Document')->directory('leases'),
+                FileUpload::make('document_path')->label('Lease Document')->directory('leases'),
             ]);
     }
 
@@ -40,27 +50,27 @@ class LeasesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('id')
             ->columns([
-                Tables\Columns\TextColumn::make('tenant.name')->label('Tenant')->searchable(),
-                Tables\Columns\TextColumn::make('rent_amount')->money('USD'),
-                Tables\Columns\TextColumn::make('status')->badge()->color(fn (string $state): string => match ($state) {
+                TextColumn::make('tenant.name')->label('Tenant')->searchable(),
+                TextColumn::make('rent_amount')->money('USD'),
+                TextColumn::make('status')->badge()->color(fn (string $state): string => match ($state) {
                     'draft' => 'gray', 'active' => 'success', 'ending_soon' => 'warning', 'ended' => 'info', 'terminated' => 'danger', default => 'gray',
                 }),
-                Tables\Columns\TextColumn::make('start_date')->date(),
-                Tables\Columns\TextColumn::make('end_date')->date(),
+                TextColumn::make('start_date')->date(),
+                TextColumn::make('end_date')->date(),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                CreateAction::make(),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+            ->recordActions([
+                EditAction::make(),
+                DeleteAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
